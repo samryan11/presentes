@@ -785,7 +785,7 @@ function screenAtelier(tab) {
     state.chosen === -1 ? state.sketch : imgUrl(buildPrompt(VARIATIONS[state.chosen]), state.seeds[state.chosen]);
   const tabs = [
     ["nft", "Ficha NFT"],
-    ["mint", "Mint + Split"],
+    ["mint", "Mint + Reparto"],
     ["capsula", "Cápsula"],
     ["taller", "Ficha de taller"],
     ["perfil", "Mi perfil"],

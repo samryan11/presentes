@@ -1,12 +1,14 @@
 :root {
-  --bg: #0b0a09;
-  --bg-soft: #14120f;
-  --panel: #1a1712;
+  /* identidad PRESENTES: oro, denim oscuro, marfil (el cian queda para campañas) */
+  --bg: #0a0d12;
+  --bg-soft: #121a26;
+  --panel: #172130;
+  --denim: #2c4162;
   --ivory: #f2ead9;
-  --ivory-dim: #b8ae98;
+  --ivory-dim: #a9b0bc;
   --gold: #c8a24b;
   --gold-soft: #8a7136;
-  --line: #2c2820;
+  --line: #253248;
   --danger: #b0523f;
   --ok: #6f8f5a;
   --serif: "Cormorant Garamond", Georgia, serif;
@@ -16,7 +18,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: radial-gradient(1200px 800px at 70% -10%, #1c1812 0%, var(--bg) 55%);
+  background: radial-gradient(1200px 800px at 70% -10%, #16202e 0%, var(--bg) 55%);
   color: var(--ivory);
   font-family: var(--sans);
   min-height: 100vh;
@@ -211,7 +213,7 @@ textarea.free {
   resize: vertical;
   outline: none;
 }
-textarea.free:focus { border-color: var(--gold-soft); }
+textarea.free:focus { border-color: var(--denim); }
 .nav-row { display: flex; justify-content: space-between; margin-top: 34px; align-items: center; }
 
 .upload-box {
@@ -244,7 +246,7 @@ textarea.free:focus { border-color: var(--gold-soft); }
 /* ---------- perfil ---------- */
 .perfil-card {
   border: 1px solid var(--gold-soft);
-  background: linear-gradient(150deg, #201b12, var(--bg-soft) 70%);
+  background: linear-gradient(150deg, #1a2436, var(--bg-soft) 70%);
   padding: 44px 40px;
   max-width: 720px;
   margin: 0 auto;
