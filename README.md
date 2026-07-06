@@ -13,6 +13,7 @@ Inspirado en la estética de The Fabricant y el espíritu de taller de Clo 3D.
 4. Te llevás todo:
    - **Ficha NFT** con nombre y narrativa de la prenda (1/1, one of a kind)
    - **Mint simulado** con el split explicado: 40% diseñador · 40% tallerista · 20% DAO
+   - **Token ES** (simulado): la moneda de PRESENTES, respaldada por trabajo real de upcycling — como los tokens del agro argentino que valen granos reales. Se gana por hitos: +10 neuro-action, +15 idea rectora, +25 mint
    - **Cápsula**: 3 prendas derivadas de la idea rectora
    - **Ficha de taller**: guía de upcycling para materializar la prenda IRL
    - **Tu perfil de diseñador/a** con ruta sugerida

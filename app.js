@@ -16,12 +16,12 @@ const state = {
   minted: false,
   tokenId: null,
   capsuleSeeds: [],
-  press: 0,                                            // saldo del token PRESS (simulado)
+  press: 0,                                            // saldo del token ES (simulado)
   pressHitos: { perfil: false, rector: false, mint: false }, // para no pagar dos veces el mismo hito
 };
 
-/* Token PRESS: como los tokens del agro que valen granos reales,
-   PRESS vale trabajo real de upcycling. Acá, versión educativa. */
+/* Token ES: como los tokens del agro que valen granos reales,
+   ES vale trabajo real de upcycling. Acá, versión educativa. */
 function earnPress(monto, hito) {
   if (state.pressHitos[hito]) return false;
   state.pressHitos[hito] = true;
@@ -35,7 +35,7 @@ function updatePressChip(pulse) {
   const chip = document.getElementById("pressChip");
   if (!chip) return;
   chip.hidden = state.press <= 0;
-  chip.textContent = `⬢ ${state.press} PRESS`;
+  chip.textContent = `⬢ ${state.press} ES`;
   if (pulse) {
     chip.classList.add("pulse");
     setTimeout(() => chip.classList.remove("pulse"), 400);
@@ -548,7 +548,7 @@ function screenPerfil() {
   render(`
     <div class="perfil-card">
       <div class="kicker">La neuro-action te devuelve el espejo</div>
-      ${gano ? `<div class="press-earn">⬢ +10 PRESS · tu neuro-action ya vale</div>` : ""}
+      ${gano ? `<div class="press-earn">⬢ +10 ES · tu neuro-action ya vale</div>` : ""}
       <div class="arquetipo">${p.arquetipo.nombre}</div>
       <p class="lead" style="max-width:100%">${p.arquetipo.ruta}</p>
       <div class="perfil-grid">
@@ -866,13 +866,13 @@ function screenAtelier(tab) {
           }
         </div>
         <div class="f-block" style="margin-top:26px;border:1px solid var(--line);padding:22px 24px;background:var(--bg-soft)">
-          <h4 style="font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">⬢ Token PRESS · tu saldo: ${state.press}</h4>
+          <h4 style="font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">⬢ Token ES · tu saldo: ${state.press}</h4>
           <p style="font-size:14px;line-height:1.7">
-            PRESS es la moneda de PRESENTES. En el campo argentino ya existen tokens que valen granos de verdad:
-            cada token, un grano guardado en un silo real. PRESS funciona igual, pero su respaldo es otro:
+            ES es la moneda de PRESENTES. En el campo argentino ya existen tokens que valen granos de verdad:
+            cada token, un grano guardado en un silo real. ES funciona igual, pero su respaldo es otro:
             <b>trabajo real de upcycling</b> — prendas confeccionadas, horas de taller, diseños que se materializan.
-            Hoy es una prueba: lo ganás usando la app. Mañana, cuando tu NFT se venda, tu 40% llega en PRESS
-            — y con PRESS votás qué hace la comunidad después.
+            Hoy es una prueba: lo ganás usando la app. Mañana, cuando tu NFT se venda, tu 40% llega en ES
+            — y con ES votás qué hace la comunidad después.
           </p>
         </div>
       </div>`;
@@ -962,7 +962,7 @@ function screenAtelier(tab) {
           <div><div class="pg-k">Material</div><div class="pg-v">${p.material.nombre}</div></div>
           <div><div class="pg-k">Firma</div><div class="pg-v">${p.firma.nombre}</div></div>
           <div><div class="pg-k">Prendas diseñadas</div><div class="pg-v">1 idea rectora + 3 derivadas de cápsula</div></div>
-          <div><div class="pg-k">Token PRESS</div><div class="pg-v">⬢ ${state.press} ganados en esta sesión</div></div>
+          <div><div class="pg-k">Token ES</div><div class="pg-v">⬢ ${state.press} ganados en esta sesión</div></div>
           <div style="grid-column:1/-1"><div class="pg-k">Próximo paso sugerido</div>
             <div class="pg-v">Diseñá en otra línea PFP para expandir tu identidad, o proponé un concepto para la próxima votación de temporada de la DAO.</div></div>
         </div>
@@ -973,7 +973,7 @@ function screenAtelier(tab) {
 function mintReceipt() {
   return `
     <p class="mint-done">✦ NFT minteado (simulación educativa)</p>
-    <p style="margin-top:6px;color:var(--gold)">⬢ +25 PRESS por mintear tu diseño</p>
+    <p style="margin-top:6px;color:var(--gold)">⬢ +25 ES por mintear tu diseño</p>
     <p style="margin-top:10px">Token ID: <code>${state.tokenId}</code></p>
     <p>Contrato: <code>SIM.presentes.dao</code> · Metadata: <code>ipfs://simulado/${state.tokenId?.toLowerCase()}</code></p>
     <p style="margin-top:10px;color:var(--ivory-dim)">
