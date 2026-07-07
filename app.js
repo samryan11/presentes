@@ -889,7 +889,6 @@ function screenAtelier(tab) {
     ["mint", "Mint + Reparto"],
     ["capsula", "Cápsula"],
     ["taller", "Ficha de taller"],
-    ["molderia", "Moldería"],
     ["perfil", "Mi perfil"],
   ];
   render(`
@@ -939,10 +938,12 @@ function screenAtelier(tab) {
           </div>
           <div class="up-actions" style="margin-top:22px">
             <button class="btn ghost" id="dlBtn">Descargar imagen</button>
+            <button class="btn" id="verMolde">La moldería de tu diseño →</button>
           </div>
         </div>
       </div>`;
     mountImg(body.querySelector(".nft-frame"), rectorUrl, pieceName());
+    document.getElementById("verMolde").onclick = () => screenAtelier("taller");
     document.getElementById("dlBtn").onclick = async () => {
       const nombre = pieceName().replace(/\s+/g, "_").replace(/[ºª]/g, "") + ".jpg";
       try {
@@ -1065,36 +1066,31 @@ function screenAtelier(tab) {
             : ""
         }
         <div class="f-block"><h4>Trazabilidad</h4><p>Registrar fotos del antes/después y origen de las prendas base. En la versión real, esta trazabilidad se ancla al NFT (IPFS) y la audita la DAO.</p></div>
-      </div>`;
-  }
-
-  if (tab === "molderia") {
-    const m = state.medidas || { ...MEDIDAS_DEF };
-    body.innerHTML = `
-      <div class="ficha fade-in">
-        <p class="lead" style="margin-bottom:22px">
-          La moldería es el puente entre tu diseño y las manos del taller.
-          Cargá las medidas del cuerpo, trazá los moldes base y descargalos:
-          impresos al 100% son moldes de verdad — el cuadrado de control debe medir exactamente 5 cm.
-        </p>
-        <div class="medidas-grid">
-          ${MEDIDAS_CAMPOS.map(
-            ([k, label]) => `
-            <div>
-              <label for="med-${k}">${label} (cm)</label>
-              <input type="number" id="med-${k}" value="${m[k]}" min="10" max="200" step="0.5" />
-            </div>`
-          ).join("")}
+        <div class="f-block" style="border-color:var(--gold-soft)">
+          <h4>Esta es la moldería de tu diseño</h4>
+          <p style="margin-bottom:18px">
+            Todo diseño termina acá: en los moldes que el taller apoya sobre la tela.
+            Ajustá las medidas si hace falta — descargados e impresos al 100%, son moldes de verdad
+            (el cuadrado de control debe medir exactamente 5 cm).
+          </p>
+          <div class="medidas-grid">
+            ${MEDIDAS_CAMPOS.map(
+              ([k, label]) => `
+              <div>
+                <label for="med-${k}">${label} (cm)</label>
+                <input type="number" id="med-${k}" value="${(state.medidas || MEDIDAS_DEF)[k]}" min="10" max="200" step="0.5" />
+              </div>`
+            ).join("")}
+          </div>
+          <div class="up-actions" style="margin:18px 0 8px">
+            <button class="btn" id="trazarBtn">Retrazar con estas medidas</button>
+          </div>
+          <div id="moldes"></div>
+          <p style="margin-top:14px;color:var(--ivory-dim);font-size:13px">
+            Molde base educativo, sistema simplificado: verificá sobre el cuerpo antes de cortar.
+            Agregá 1 cm de costura y 4 cm de dobladillo. Próxima etapa: export DXF para abrirlos directo en Clo 3D.
+          </p>
         </div>
-        <div class="up-actions" style="margin:20px 0 8px">
-          <button class="btn primary" id="trazarBtn">Trazar moldes base</button>
-        </div>
-        <div id="moldes"></div>
-        <p class="mentora-sub" style="margin-top:16px">
-          Molde base educativo, sistema simplificado: verificá sobre el cuerpo antes de cortar.
-          Agregá 1 cm de costura y 4 cm de dobladillo. Estos moldes son también el puente a Clo 3D:
-          en la próxima etapa los exportamos en DXF, el formato que Clo importa directo.
-        </p>
       </div>`;
     const trazar = () => {
       const med = {};
@@ -1120,7 +1116,7 @@ function screenAtelier(tab) {
       });
     };
     document.getElementById("trazarBtn").onclick = trazar;
-    if (state.medidas) trazar();
+    trazar();
   }
 
   if (tab === "perfil") {
