@@ -16,6 +16,7 @@ const state = {
   minted: false,
   tokenId: null,
   capsuleSeeds: [],
+  medidas: null,                                       // medidas del cuerpo para la moldería
   press: 0,                                            // saldo del token ES (simulado)
   pressHitos: { perfil: false, rector: false, mint: false }, // para no pagar dos veces el mismo hito
 };
@@ -48,7 +49,7 @@ function save() {
     answers: state.answers, lineKey: state.line?.key || null, tela: state.tela, desc: state.desc,
     seeds: state.seeds, chosen: state.chosen, minted: state.minted,
     tokenId: state.tokenId, capsuleSeeds: state.capsuleSeeds,
-    press: state.press, pressHitos: state.pressHitos,
+    press: state.press, pressHitos: state.pressHitos, medidas: state.medidas,
   };
   try {
     sessionStorage.setItem("presentes-estudio", JSON.stringify({ ...data, sketch: state.sketch }));
@@ -78,6 +79,7 @@ function restore() {
     state.capsuleSeeds = s.capsuleSeeds || [];
     state.press = s.press || 0;
     state.pressHitos = s.pressHitos || { perfil: false, rector: false, mint: false };
+    state.medidas = s.medidas || null;
     updatePressChip();
     if (state.chosen != null && state.line) screenAtelier("nft");
     else if (state.seeds.length && state.line) screenOpciones();
@@ -763,6 +765,105 @@ function screenOpciones() {
   });
 }
 
+/* ---------------- MOLDERÍA BASE ----------------
+   Trazado geométrico simplificado a partir de medidas del cuerpo.
+   Los SVG llevan unidades reales en cm: impresos al 100%, son moldes de verdad.
+   Cada hoja incluye un cuadrado de control de 5 cm para verificar la escala. */
+
+const MEDIDAS_DEF = { busto: 92, cintura: 76, cadera: 98, espalda: 36, talle: 42, manga: 58, cuello: 37 };
+
+const MEDIDAS_CAMPOS = [
+  ["busto", "Contorno de busto/pecho"],
+  ["cintura", "Contorno de cintura"],
+  ["cadera", "Contorno de cadera"],
+  ["espalda", "Ancho de espalda"],
+  ["talle", "Largo de talle"],
+  ["manga", "Largo de manga"],
+  ["cuello", "Contorno de cuello"],
+];
+
+function moldeSVG(nombre, w, h, inner) {
+  // hoja: margen 1.5cm + 3cm arriba para título; cuadrado de control de 5cm
+  const W = w + 3, H = h + 6;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}cm" height="${H}cm" viewBox="0 0 ${W} ${H}">
+  <rect x="0" y="0" width="${W}" height="${H}" fill="#faf6ec"/>
+  <text x="1.5" y="1.6" font-size="1.1" font-family="sans-serif" fill="#222" letter-spacing="0.1">PRESENTES · ${nombre}</text>
+  <g transform="translate(1.5,3)">${inner}</g>
+  <g transform="translate(${W - 6.5},${H - 6.5})">
+    <rect width="5" height="5" fill="none" stroke="#222" stroke-width="0.05"/>
+    <text x="2.5" y="2.8" font-size="0.7" font-family="sans-serif" fill="#222" text-anchor="middle">5 cm</text>
+  </g>
+</svg>`;
+  return { nombre, svg };
+}
+
+function hilo(x, y1, y2) {
+  return `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="#222" stroke-width="0.05"/>
+  <path d="M ${x - 0.4} ${y1 + 0.8} L ${x} ${y1} L ${x + 0.4} ${y1 + 0.8}" fill="none" stroke="#222" stroke-width="0.05"/>
+  <text x="${x + 0.4}" y="${(y1 + y2) / 2}" font-size="0.7" font-family="sans-serif" fill="#222" transform="rotate(90 ${x + 0.4} ${(y1 + y2) / 2})">HILO</text>`;
+}
+
+function bloqueEspalda(m) {
+  const w = m.busto / 4 + 2, h = m.talle;
+  const sisa = m.busto / 6 + 5, eW = m.cuello / 6 + 0.5, drop = 4, hom = m.espalda / 2;
+  const inner = `
+  <path d="M 0 ${h} L 0 1.5 Q ${eW * 0.4} 0.2 ${eW} 0 L ${hom} ${drop} Q ${hom + 0.6} ${sisa * 0.8} ${w} ${sisa} L ${w} ${h} Z"
+        fill="none" stroke="#222" stroke-width="0.08"/>
+  ${hilo(w * 0.55, sisa + 2, h - 2)}
+  <text x="${w * 0.18}" y="${h * 0.6}" font-size="0.9" font-family="sans-serif" fill="#222">ESPALDA</text>
+  <text x="${w * 0.18}" y="${h * 0.6 + 1.4}" font-size="0.7" font-family="sans-serif" fill="#555">corte 1 · al doblez (centro espalda)</text>`;
+  return moldeSVG("ESPALDA BASE", w, h, inner);
+}
+
+function bloqueDelantero(m) {
+  const w = m.busto / 4 + 3, h = m.talle + 1;
+  const sisa = m.busto / 6 + 5, eW = m.cuello / 6 + 1, eD = m.cuello / 6 + 2, drop = 4.5, hom = m.espalda / 2;
+  const inner = `
+  <path d="M 0 ${h} L 0 ${eD} Q ${eW * 0.15} ${eD * 0.25} ${eW} 0 L ${hom} ${drop} Q ${hom + 0.6} ${sisa * 0.8} ${w} ${sisa} L ${w} ${h} Z"
+        fill="none" stroke="#222" stroke-width="0.08"/>
+  ${hilo(w * 0.55, sisa + 2, h - 2)}
+  <text x="${w * 0.18}" y="${h * 0.6}" font-size="0.9" font-family="sans-serif" fill="#222">DELANTERO</text>
+  <text x="${w * 0.18}" y="${h * 0.6 + 1.4}" font-size="0.7" font-family="sans-serif" fill="#555">corte 1 · al doblez (centro delantero)</text>`;
+  return moldeSVG("DELANTERO BASE", w, h, inner);
+}
+
+function bloqueManga(m) {
+  const largo = m.manga, ancho = m.busto / 3 + 4;
+  const cabeza = (m.busto / 6 + 5) * 0.75, punio = ancho * 0.65;
+  const px1 = (ancho - punio) / 2, px2 = ancho - px1, cx = ancho / 2;
+  const inner = `
+  <path d="M ${cx} 0 Q ${ancho * 0.85} ${cabeza * 0.25} ${ancho} ${cabeza} L ${px2} ${largo} L ${px1} ${largo} L 0 ${cabeza} Q ${ancho * 0.15} ${cabeza * 0.25} ${cx} 0 Z"
+        fill="none" stroke="#222" stroke-width="0.08"/>
+  ${hilo(cx, cabeza + 2, largo - 2)}
+  <text x="${cx - 2.5}" y="${largo * 0.55}" font-size="0.9" font-family="sans-serif" fill="#222">MANGA</text>
+  <text x="${cx - 2.5}" y="${largo * 0.55 + 1.4}" font-size="0.7" font-family="sans-serif" fill="#555">corte 2</text>`;
+  return moldeSVG("MANGA BASE", ancho, largo, inner);
+}
+
+function bloqueBolso() {
+  const w = 35, h = 40;
+  const inner = `
+  <rect x="0" y="0" width="${w}" height="${h}" fill="none" stroke="#222" stroke-width="0.08"/>
+  ${hilo(w * 0.5, 3, h - 3)}
+  <text x="3" y="${h * 0.5}" font-size="0.9" font-family="sans-serif" fill="#222">CUERPO DEL BOLSO · corte 2</text>
+  <rect x="0" y="${h + 2}" width="${w * 0.86}" height="8" fill="none" stroke="#222" stroke-width="0.08"/>
+  <text x="3" y="${h + 6.8}" font-size="0.9" font-family="sans-serif" fill="#222">MANIJA · corte 2 (doblar a lo largo)</text>`;
+  return moldeSVG("BOLSO BASE (PRESIADO)", w, h + 10, inner);
+}
+
+function trazarMoldes(m, lineKey) {
+  if (lineKey === "pres") return [bloqueBolso()];
+  return [bloqueEspalda(m), bloqueDelantero(m), bloqueManga(m)];
+}
+
+function dlSVG(nombre, svg) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+  a.download = "PRESENTES_" + nombre.replace(/[^A-Za-z0-9]+/g, "_") + ".svg";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 /* ---------------- ATELIER FINAL ---------------- */
 
 function pieceName() {
@@ -788,6 +889,7 @@ function screenAtelier(tab) {
     ["mint", "Mint + Reparto"],
     ["capsula", "Cápsula"],
     ["taller", "Ficha de taller"],
+    ["molderia", "Moldería"],
     ["perfil", "Mi perfil"],
   ];
   render(`
@@ -809,7 +911,7 @@ function screenAtelier(tab) {
   document.getElementById("back").onclick = screenOpciones;
   document.getElementById("printBtn").onclick = () => window.print();
   document.getElementById("restart").onclick = () => {
-    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], press: 0, pressHitos: { perfil: false, rector: false, mint: false } });
+    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false } });
     updatePressChip();
     try { sessionStorage.removeItem("presentes-estudio"); } catch (_) {}
     screenLanding();
@@ -964,6 +1066,61 @@ function screenAtelier(tab) {
         }
         <div class="f-block"><h4>Trazabilidad</h4><p>Registrar fotos del antes/después y origen de las prendas base. En la versión real, esta trazabilidad se ancla al NFT (IPFS) y la audita la DAO.</p></div>
       </div>`;
+  }
+
+  if (tab === "molderia") {
+    const m = state.medidas || { ...MEDIDAS_DEF };
+    body.innerHTML = `
+      <div class="ficha fade-in">
+        <p class="lead" style="margin-bottom:22px">
+          La moldería es el puente entre tu diseño y las manos del taller.
+          Cargá las medidas del cuerpo, trazá los moldes base y descargalos:
+          impresos al 100% son moldes de verdad — el cuadrado de control debe medir exactamente 5 cm.
+        </p>
+        <div class="medidas-grid">
+          ${MEDIDAS_CAMPOS.map(
+            ([k, label]) => `
+            <div>
+              <label for="med-${k}">${label} (cm)</label>
+              <input type="number" id="med-${k}" value="${m[k]}" min="10" max="200" step="0.5" />
+            </div>`
+          ).join("")}
+        </div>
+        <div class="up-actions" style="margin:20px 0 8px">
+          <button class="btn primary" id="trazarBtn">Trazar moldes base</button>
+        </div>
+        <div id="moldes"></div>
+        <p class="mentora-sub" style="margin-top:16px">
+          Molde base educativo, sistema simplificado: verificá sobre el cuerpo antes de cortar.
+          Agregá 1 cm de costura y 4 cm de dobladillo. Estos moldes son también el puente a Clo 3D:
+          en la próxima etapa los exportamos en DXF, el formato que Clo importa directo.
+        </p>
+      </div>`;
+    const trazar = () => {
+      const med = {};
+      MEDIDAS_CAMPOS.forEach(([k]) => {
+        med[k] = parseFloat(document.getElementById("med-" + k).value) || MEDIDAS_DEF[k];
+      });
+      state.medidas = med;
+      save();
+      const moldes = trazarMoldes(med, state.line.key);
+      document.getElementById("moldes").innerHTML = moldes
+        .map(
+          (mo, i) => `
+        <div class="molde-sheet">
+          ${mo.svg}
+          <div class="up-actions" style="padding:10px 0 2px">
+            <button class="btn ghost molde-dl" data-i="${i}">Descargar ${mo.nombre} (SVG escala real)</button>
+          </div>
+        </div>`
+        )
+        .join("");
+      document.querySelectorAll(".molde-dl").forEach((b) => {
+        b.onclick = () => dlSVG(moldes[b.dataset.i].nombre, moldes[b.dataset.i].svg);
+      });
+    };
+    document.getElementById("trazarBtn").onclick = trazar;
+    if (state.medidas) trazar();
   }
 
   if (tab === "perfil") {
