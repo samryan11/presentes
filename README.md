@@ -15,8 +15,9 @@ Inspirado en la estética de The Fabricant y el espíritu de taller de Clo 3D.
    - **Mint simulado** con el split explicado: 40% diseñador · 40% tallerista · 20% DAO
    - **Token ES** (simulado): la moneda de PRESENTES, respaldada por trabajo real de upcycling — como los tokens del agro argentino que valen granos reales. Se gana por hitos: +10 neuro-action, +15 idea rectora, +25 mint
    - **Cápsula**: 3 prendas derivadas de la idea rectora
-   - **Ficha de taller**: guía de upcycling para materializar la prenda IRL
+   - **Ficha de taller**: guía de upcycling para materializar la prenda IRL, con la moldería de tu diseño al final (moldes base SVG a escala real)
    - **Tu perfil de diseñador/a** con ruta sugerida
+5. **El archivo vivo**: la muestra que no cierra. La colección oficial vive en `archivo.json` (siempre online); cada diseñador suma sus diseños a su archivo local y puede exportarlos en .json para que la curaduría los incorpore a la colección.
 
 Todo es **simulado y educativo** en esta versión: no toca ninguna blockchain real. Pensado para talleres en escuelas secundarias y demos ante incubadoras.
 

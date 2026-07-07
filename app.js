@@ -18,7 +18,7 @@ const state = {
   capsuleSeeds: [],
   medidas: null,                                       // medidas del cuerpo para la moldería
   press: 0,                                            // saldo del token ES (simulado)
-  pressHitos: { perfil: false, rector: false, mint: false }, // para no pagar dos veces el mismo hito
+  pressHitos: { perfil: false, rector: false, mint: false, archivo: false }, // para no pagar dos veces el mismo hito
 };
 
 /* Token ES: como los tokens del agro que valen granos reales,
@@ -78,7 +78,7 @@ function restore() {
     state.tokenId = s.tokenId;
     state.capsuleSeeds = s.capsuleSeeds || [];
     state.press = s.press || 0;
-    state.pressHitos = s.pressHitos || { perfil: false, rector: false, mint: false };
+    state.pressHitos = s.pressHitos || { perfil: false, rector: false, mint: false, archivo: false };
     state.medidas = s.medidas || null;
     updatePressChip();
     if (state.chosen != null && state.line) screenAtelier("nft");
@@ -398,6 +398,11 @@ function screenLanding() {
           <h3>Despertar al diseñador que llevás adentro</h3>
           <p>Seis preguntas de neuro-action. Después, tu idea rectora y tu primera ficha NFT + UPCYCLING.</p>
         </div>
+        <div class="door" id="doorArchivo">
+          <span class="door-k">La muestra que no cierra</span>
+          <h3>El archivo vivo</h3>
+          <p>La colección de prendas únicas nacidas en los talleres: cada una con su historia, su boceto y su idea rectora. Siempre online.</p>
+        </div>
         <div class="door" id="doorAbout">
           <span class="door-k">¿Qué es esto?</span>
           <h3>PRESENTES · NFT + UPCYCLING</h3>
@@ -407,6 +412,7 @@ function screenLanding() {
     </section>
   `);
   document.getElementById("doorStart").onclick = () => screenMentora(0);
+  document.getElementById("doorArchivo").onclick = screenArchivo;
   document.getElementById("doorAbout").onclick = screenAbout;
 }
 
@@ -765,6 +771,92 @@ function screenOpciones() {
   });
 }
 
+/* ---------------- ARCHIVO VIVO ----------------
+   La muestra que nunca cierra: la colección oficial vive en archivo.json
+   (siempre online, en el repo) y el archivo personal en este dispositivo.
+   Los diseños locales se exportan en .json para sumarse a la colección oficial. */
+
+function archivoLocal() {
+  try { return JSON.parse(localStorage.getItem("presentes-archivo") || "[]"); } catch (_) { return []; }
+}
+function archivoGuardar(list) {
+  try { localStorage.setItem("presentes-archivo", JSON.stringify(list)); } catch (_) {}
+}
+
+function entradaActual() {
+  const p = state.profile;
+  return {
+    nombre: pieceName(),
+    linea: state.line.nombre,
+    arquetipo: p.arquetipo.nombre,
+    narrativa: pieceStory(),
+    imagen: state.chosen === -1 ? state.sketch : imgUrl(buildPrompt(VARIATIONS[state.chosen]), state.seeds[state.chosen]),
+    origen: state.chosen === -1 ? "Boceto a mano del diseñador/a" : "IA desde las palabras del diseñador/a",
+    fecha: new Date().toISOString().slice(0, 10),
+  };
+}
+
+function cardArchivo(e) {
+  return `
+    <figure title="${(e.narrativa || "").replace(/"/g, "&quot;")}">
+      <div class="gen-cell" style="cursor:default"><div class="spin"><div class="loader"></div></div></div>
+      <figcaption>${e.nombre} · ${e.linea}<br>
+        <span style="color:var(--gold)">${e.arquetipo}</span> · ${e.fecha}<br>${e.origen || ""}</figcaption>
+    </figure>`;
+}
+
+function montarCards(cont, entradas) {
+  cont.innerHTML = entradas.map(cardArchivo).join("");
+  cont.querySelectorAll(".gen-cell").forEach((cell, i) => mountImg(cell, entradas[i].imagen, entradas[i].nombre));
+}
+
+async function screenArchivo() {
+  render(`
+    <div>
+      <div class="kicker">El archivo vivo · siempre online</div>
+      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">Nada acá se fabricó nuevo.<br>Todo acá es único.</h1>
+      <p class="lead">
+        Cada prenda de este archivo nació de una neuro-action, una prenda rescatada y una idea rectora.
+        La colección crece con cada taller — y no cierra nunca.
+      </p>
+      <div class="mentora-label" style="margin-top:34px">Colección oficial</div>
+      <div class="capsula-grid" id="gOficial"><p style="color:var(--ivory-dim);font-size:13px">Abriendo el archivo…</p></div>
+      <div class="mentora-label" style="margin-top:38px">Tu archivo en este dispositivo</div>
+      <div class="capsula-grid" id="gLocal"></div>
+      <div class="nav-row">
+        <button class="btn ghost" id="back">Inicio</button>
+        <button class="btn ghost" id="dlArchivo">Descargar mi archivo (.json)</button>
+      </div>
+      <p class="mentora-sub" style="margin-top:14px">
+        ¿Querés que tus diseños entren a la colección oficial? Descargá tu archivo y mandáselo
+        a la curaduría del taller: cada temporada se suman nuevas prendas.
+      </p>
+    </div>
+  `);
+  document.getElementById("back").onclick = screenLanding;
+
+  const locals = archivoLocal();
+  const gLocal = document.getElementById("gLocal");
+  if (locals.length) montarCards(gLocal, locals);
+  else gLocal.innerHTML = `<p style="color:var(--ivory-dim);font-size:13px;grid-column:1/-1">Todavía no sumaste diseños desde este dispositivo. Diseñá tu prenda y tocá “Sumar al archivo vivo”.</p>`;
+
+  document.getElementById("dlArchivo").onclick = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(locals, null, 2)], { type: "application/json" }));
+    a.download = "mi_archivo_presentes.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  try {
+    const res = await fetch("archivo.json", { cache: "no-store" });
+    const oficial = await res.json();
+    montarCards(document.getElementById("gOficial"), oficial);
+  } catch (_) {
+    document.getElementById("gOficial").innerHTML = `<p style="color:var(--ivory-dim);font-size:13px;grid-column:1/-1">La colección oficial no se pudo abrir ahora. Probá de nuevo en un rato.</p>`;
+  }
+}
+
 /* ---------------- MOLDERÍA BASE ----------------
    Trazado geométrico simplificado a partir de medidas del cuerpo.
    Los SVG llevan unidades reales en cm: impresos al 100%, son moldes de verdad.
@@ -902,6 +994,8 @@ function screenAtelier(tab) {
       <div class="print-row">
         <button class="btn ghost" id="back">Elegir otra visión</button>
         <button class="btn ghost" id="printBtn">Imprimir / guardar PDF</button>
+        <button class="btn" id="archBtn">Sumar al archivo vivo</button>
+        <button class="btn ghost" id="verArchivo">Ver el archivo</button>
         <button class="btn" id="restart">Nueva sesión</button>
       </div>
     </div>
@@ -909,8 +1003,25 @@ function screenAtelier(tab) {
   app.querySelectorAll(".tab").forEach((b) => (b.onclick = () => screenAtelier(b.dataset.tab)));
   document.getElementById("back").onclick = screenOpciones;
   document.getElementById("printBtn").onclick = () => window.print();
+  document.getElementById("verArchivo").onclick = screenArchivo;
+  const archBtn = document.getElementById("archBtn");
+  const yaEnArchivo = archivoLocal().some((e) => e.nombre === pieceName());
+  if (yaEnArchivo) {
+    archBtn.textContent = "✓ En tu archivo";
+    archBtn.disabled = true;
+  }
+  archBtn.onclick = () => {
+    const list = archivoLocal();
+    if (!list.some((e) => e.nombre === pieceName())) {
+      list.unshift(entradaActual());
+      archivoGuardar(list);
+      earnPress(5, "archivo");
+    }
+    archBtn.textContent = "✓ En tu archivo";
+    archBtn.disabled = true;
+  };
   document.getElementById("restart").onclick = () => {
-    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false } });
+    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false, archivo: false } });
     updatePressChip();
     try { sessionStorage.removeItem("presentes-estudio"); } catch (_) {}
     screenLanding();
