@@ -1,9 +1,9 @@
 # PRESENTES · NFT + UPCYCLING
 
 Prototipo web del ecosistema PRESENTES (NFT + upcycling).
-Inspirado en la estética de The Fabricant y el espíritu de taller de Clo 3D.
+Digital Fashion con el espíritu de culturizar el upcycling. Inspira desde la disrupción de buscar el fashion designer que llevas dentro como una analogía de la búsqueda interior. Moda conceptual y producible. Muy artístico. Muy técnico. 
 
-> "To see the soul in the material."
+> "To See The Soul In The Material."
 
 ## Qué hace
 
