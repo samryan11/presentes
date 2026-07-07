@@ -835,9 +835,26 @@ function screenAtelier(tab) {
             <div class="meta-row"><span class="k">Estado</span><span class="v">${state.minted ? "Minteado (simulado)" : "Listo para mint"}</span></div>
             <div class="meta-row"><span class="k">Destino físico</span><span class="v">Confección upcycling en taller aliado</span></div>
           </div>
+          <div class="up-actions" style="margin-top:22px">
+            <button class="btn ghost" id="dlBtn">Descargar imagen</button>
+          </div>
         </div>
       </div>`;
     mountImg(body.querySelector(".nft-frame"), rectorUrl, pieceName());
+    document.getElementById("dlBtn").onclick = async () => {
+      const nombre = pieceName().replace(/\s+/g, "_").replace(/[ºª]/g, "") + ".jpg";
+      try {
+        const res = await fetch(rectorUrl);
+        const blob = await res.blob();
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = nombre;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (_) {
+        window.open(rectorUrl, "_blank");
+      }
+    };
   }
 
   if (tab === "mint") {
