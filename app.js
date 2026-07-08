@@ -989,13 +989,13 @@ async function screenPerchero() {
   render(`
     <div>
       <div class="kicker">NEUROACTION NFT · el marketplace de PRESENTES</div>
-      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">NFT financiando<br>confección.</h1>
-      <p class="lead">
-        Acá sí se compra — pero de otra manera: adoptás un diseño único (1/1), pagás en tokens ES,
-        y esa adopción pone en marcha la prenda real, confeccionada upcycling por un tallerista.
-        El contrato reparte solo: 40% diseñador · 40% tallerista · 20% DAO, con regalía al diseñador
-        en cada reventa. Solo entra <b>indumentaria NFT</b> — cada diseño espera colgado de su percha.
-      </p>
+      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">NFT Financiando<br>Confección.</h1>
+      <div class="tac-strip">
+        <div class="tac"><b>1/1</b><span>Solo indumentaria. Cada diseño existe una sola vez.</span></div>
+        <div class="tac"><b>⬢ ES</b><span>Adoptás con el token de PRESENTES. Se gana creando.</span></div>
+        <div class="tac"><b>40·40·20</b><span>El contrato reparte solo: diseño, taller, DAO.</span></div>
+        <div class="tac"><b>DAO</b><span>La comunidad decide. Un token, un voto.</span></div>
+      </div>
       <div class="mentora-label" style="margin-top:34px">Diseños de la comunidad</div>
       <div class="perchero-grid" id="pOficial"><p style="color:var(--ivory-dim);font-size:13px">Acomodando las perchas…</p></div>
       <div class="mentora-label" style="margin-top:38px">Tus diseños colgados</div>
