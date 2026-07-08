@@ -989,7 +989,7 @@ async function screenPerchero() {
   render(`
     <div>
       <div class="kicker">NEUROACTION NFT · el marketplace de PRESENTES</div>
-      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">El NFT financia<br>la confección.</h1>
+      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">NFT financiando<br>confección.</h1>
       <p class="lead">
         Acá sí se compra — pero de otra manera: adoptás un diseño único (1/1), pagás en tokens ES,
         y esa adopción pone en marcha la prenda real, confeccionada upcycling por un tallerista.
