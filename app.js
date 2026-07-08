@@ -277,7 +277,7 @@ function buildPrompt(variation) {
   const p = state.profile;
   const line = state.line;
   const parts = [
-    "digital fashion couture, single garment product showcase, floating ghost mannequin display",
+    "digital fashion couture editorial, garment worn by a real human figure, natural imperfect body, authentic relaxed pose, real person not a mannequin",
     line.garment,
     p.material.prompt,
     p.paleta.prompt,
