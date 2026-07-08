@@ -464,17 +464,12 @@ function screenAbout() {
     <div class="mentora-wrap">
       <div class="kicker">PRESENTES · NFT + UPCYCLING</div>
       <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">Diseñamos lo que no encontramos allá afuera.</h1>
-      <p class="lead" style="margin-bottom:22px">
-        Se fabrica ropa nueva como si faltara, mientras sobra ropa buena esperando otra vida.
-        Y las plataformas se quedan con el valor de tu creatividad.
-        PRESENTES no es un negocio: es otro lugar, donde el que siempre fue entusiasta de la moda
-        por fin diseña. Así funciona:
-      </p>
-      <div class="ficha">
-        <div class="f-block"><h4>1 · Diseñás</h4><p>Con la IA creás una prenda digital única, en una de las 3 líneas PFP o en la colección de temporada votada por la DAO.</p></div>
-        <div class="f-block"><h4>2 · Minteás</h4><p>Tu diseño se convierte en NFT: un certificado digital de que ese diseño es tuyo. (En esta demo, el mint es simulado y educativo.)</p></div>
-        <div class="f-block"><h4>3 · Vendés o donás</h4><p>Si tu NFT se vende, el contrato inteligente reparte automáticamente: <b>40% para vos · 40% para el tallerista que confecciona la prenda real · 20% para la tesorería DAO</b>.</p></div>
-        <div class="f-block"><h4>4 · Se materializa</h4><p>Un taller la confecciona con ropa de segunda mano de buena calidad. Upcycling: nada nuevo se fabrica, todo se transforma.</p></div>
+      <p class="lead" style="margin-bottom:22px">Sobra ropa buena. Falta tu diseño.</p>
+      <div class="tac-strip">
+        <div class="tac"><b>Diseñás</b><span>Con IA o con tu boceto. Sale de adentro tuyo.</span></div>
+        <div class="tac"><b>Minteás</b><span>Tu diseño se hace NFT. Tuyo para siempre.</span></div>
+        <div class="tac"><b>Colgás</b><span>Opcional: al marketplace, en tokens ES.</span></div>
+        <div class="tac"><b>Se hace real</b><span>Un taller la confecciona con ropa rescatada. 40·40·20.</span></div>
       </div>
       <div class="nav-row">
         <button class="btn ghost" id="back">Volver</button>
