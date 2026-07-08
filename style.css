@@ -412,6 +412,47 @@ textarea.free:focus { border-color: var(--denim); }
 
 .print-row { margin-top: 34px; display: flex; gap: 14px; flex-wrap: wrap; }
 
+/* el perchero: prendas flotando de sus perchas, fuera del mercado */
+.perchero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 26px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--gold-soft);
+}
+.colgado {
+  transform-origin: top center;
+  animation: mecer 7s ease-in-out infinite alternate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+@keyframes mecer {
+  from { transform: rotate(-1.4deg); }
+  to { transform: rotate(1.4deg); }
+}
+@media (prefers-reduced-motion: reduce) { .colgado { animation: none; } }
+.percha-svg { width: 58px; height: auto; display: block; margin-bottom: -3px; }
+.colgado-cuerpo {
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  width: 100%;
+}
+.colgado-info { padding: 14px 16px 16px; }
+.colgado-acciones { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.precio-chip {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: #171307;
+  background: var(--gold);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+.precio-chip.donacion { background: var(--ok); color: var(--ivory); }
+.adoptar-btn { padding: 10px 18px; font-size: 11px; }
+.adoptar-msg { font-size: 12px; color: var(--ivory-dim); line-height: 1.6; margin-top: 8px; }
+
 /* moldería */
 .medidas-grid {
   display: grid;

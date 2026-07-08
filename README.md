@@ -18,6 +18,7 @@ Digital Fashion con el espíritu de culturizar el upcycling. Inspira desde la di
    - **Ficha de taller**: guía de upcycling para materializar la prenda IRL, con la moldería de tu diseño al final (moldes base SVG a escala real)
    - **Tu perfil de diseñador/a** con ruta sugerida
 5. **El archivo vivo**: la muestra que no cierra. La colección oficial vive en `archivo.json` (siempre online); cada diseñador suma sus diseños a su archivo local y puede exportarlos en .json para que la curaduría los incorpore a la colección.
+6. **El Perchero**: el mercado de PRESENTES — no se ve al principio, se descubre después del diseño, y colgar es siempre opcional. Solo se cuelga indumentaria NFT (nada más entra, por definición de percha), se paga en ES, cada pieza es 1/1 con regalía al diseñador en cada reventa, y cada adopción financia la confección IRL con el reparto 40/40/20. Las prendas se mecen colgadas de sus perchas doradas, flotando fuera del mercado común. Listados oficiales en `perchero.json` + los tuyos en tu dispositivo.
 
 Todo es **simulado y educativo** en esta versión: no toca ninguna blockchain real. Pensado para talleres en escuelas secundarias y demos ante incubadoras.
 

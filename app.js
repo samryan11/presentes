@@ -18,7 +18,7 @@ const state = {
   capsuleSeeds: [],
   medidas: null,                                       // medidas del cuerpo para la moldería
   press: 0,                                            // saldo del token ES (simulado)
-  pressHitos: { perfil: false, rector: false, mint: false, archivo: false }, // para no pagar dos veces el mismo hito
+  pressHitos: { perfil: false, rector: false, mint: false, archivo: false, percha: false }, // para no pagar dos veces el mismo hito
 };
 
 /* Token ES: como los tokens del agro que valen granos reales,
@@ -78,7 +78,7 @@ function restore() {
     state.tokenId = s.tokenId;
     state.capsuleSeeds = s.capsuleSeeds || [];
     state.press = s.press || 0;
-    state.pressHitos = s.pressHitos || { perfil: false, rector: false, mint: false, archivo: false };
+    state.pressHitos = s.pressHitos || { perfil: false, rector: false, mint: false, archivo: false, percha: false };
     state.medidas = s.medidas || null;
     updatePressChip();
     if (state.chosen != null && state.line) screenAtelier("nft");
@@ -380,44 +380,37 @@ function render(html) {
   window.scrollTo({ top: 0 });
 }
 
-/* El figurín de la portada: croquis de moda en línea dorada, sin prenda todavía.
-   La estrella-brújula del logo late donde va el corazón. */
+/* El figurín de la portada: croquis de moda clásico — cabeza sin rostro con su
+   línea de guía, mano en la cadera, peso en una pierna — sin ropa todavía.
+   Línea marfil como lápiz; la estrella-brújula del logo late donde va el corazón. */
 const FIGURIN_SVG = `
-<svg viewBox="0 0 200 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Figurín de moda esperando un diseño">
-  <line x1="100" y1="8" x2="100" y2="452" stroke="#a9b0bc" stroke-width="0.6" stroke-dasharray="3 5" opacity="0.45"/>
-  <g stroke="#a9b0bc" stroke-width="0.6" stroke-dasharray="2 4" opacity="0.4">
-    <line x1="40" y1="90" x2="160" y2="90"/>
-    <line x1="52" y1="170" x2="148" y2="170"/>
-    <line x1="46" y1="216" x2="154" y2="216"/>
-    <line x1="60" y1="330" x2="140" y2="330"/>
-  </g>
-  <g fill="#a9b0bc" font-family="sans-serif" font-size="7" opacity="0.55">
-    <text x="34" y="88" text-anchor="end">hombros</text>
-    <text x="46" y="168" text-anchor="end">cintura</text>
-    <text x="40" y="214" text-anchor="end">cadera</text>
-    <text x="54" y="328" text-anchor="end">rodillas</text>
-  </g>
-  <g fill="none" stroke="#c8a24b" stroke-width="1.7" stroke-linecap="round">
-    <ellipse cx="100" cy="40" rx="15" ry="21"/>
-    <path d="M93,60 C93,66 92,71 90,76"/>
-    <path d="M107,60 C107,66 108,71 110,76"/>
-    <path d="M90,76 Q76,80 64,90"/>
-    <path d="M110,76 Q124,80 136,90"/>
-    <path d="M64,90 C70,122 82,142 80,168 C78,192 71,200 70,216"/>
-    <path d="M136,90 C130,122 118,142 120,168 C122,192 129,200 130,216"/>
-    <path d="M70,216 Q100,240 130,216"/>
-    <path d="M64,90 C55,122 53,162 49,198 C47,212 45,224 43,234"/>
-    <path d="M136,90 C145,122 147,162 151,198 C153,212 155,224 157,234"/>
-    <path d="M70,216 C74,272 82,332 84,382 C85,402 86,412 86,426"/>
-    <path d="M98,238 C96,282 93,342 92,386 C92,404 92,414 92,426"/>
-    <path d="M130,216 C126,272 118,332 116,382 C115,402 114,412 114,426"/>
-    <path d="M102,238 C104,282 107,342 108,386 C108,404 108,414 108,426"/>
-    <path d="M86,426 L76,438 L94,435"/>
-    <path d="M114,426 L124,438 L106,435"/>
+<svg viewBox="0 0 220 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Figurín de moda esperando un diseño">
+  <line x1="110" y1="6" x2="110" y2="472" stroke="#a9b0bc" stroke-width="0.5" stroke-dasharray="3 6" opacity="0.3"/>
+  <g fill="none" stroke="#f2ead9" stroke-width="1.3" stroke-linecap="round">
+    <ellipse cx="110" cy="34" rx="13" ry="19"/>
+    <line x1="98" y1="36" x2="122" y2="36" stroke-width="0.7" opacity="0.7"/>
+    <line x1="110" y1="15" x2="110" y2="53" stroke-width="0.7" opacity="0.7"/>
+    <path d="M104,52 C104,58 103,62 102,66"/>
+    <path d="M116,52 C116,58 117,62 118,66"/>
+    <path d="M102,66 Q88,72 76,84"/>
+    <path d="M118,66 Q132,70 144,80"/>
+    <path d="M76,84 C80,110 90,132 92,158 C93,175 86,190 84,208"/>
+    <path d="M144,80 C140,108 130,132 128,158 C127,175 136,190 138,206"/>
+    <path d="M84,208 Q111,224 138,206"/>
+    <path d="M144,80 C154,100 160,120 158,142 C155,164 146,182 139,196"/>
+    <path d="M139,196 C141,199 140,203 137,204 C134,206 131,204 131,201"/>
+    <path d="M76,84 C68,108 63,134 62,158 C61,180 59,200 58,220"/>
+    <path d="M58,220 C56,228 55,234 57,240 C59,243 62,241 62,236 C62,230 61,226 60,221"/>
+    <path d="M84,208 C86,260 92,320 96,370 C98,400 99,416 100,436"/>
+    <path d="M108,226 C105,270 102,330 103,380 C103,406 104,422 104,436"/>
+    <path d="M138,206 C136,255 128,310 122,360 C118,395 116,418 114,438"/>
+    <path d="M114,226 C117,268 118,315 115,362 C113,396 112,418 111,438"/>
+    <path d="M100,436 C97,444 92,450 92,453 L110,449 L104,436"/>
+    <path d="M114,438 C117,446 121,452 121,455 L103,451 L111,438"/>
   </g>
   <g>
-    <circle cx="100" cy="130" r="14" fill="none" stroke="#c8a24b" stroke-width="0.8" opacity="0.7"/>
-    <path d="M100,114 L104,126 L116,130 L104,134 L100,146 L96,134 L84,130 L96,126 Z" fill="#c8a24b"/>
+    <circle cx="110" cy="122" r="12" fill="none" stroke="#c8a24b" stroke-width="0.8" opacity="0.7"/>
+    <path d="M110,108 L113.5,118.5 L124,122 L113.5,125.5 L110,136 L106.5,125.5 L96,122 L106.5,118.5 Z" fill="#c8a24b"/>
   </g>
 </svg>`;
 
@@ -913,6 +906,123 @@ async function screenArchivo() {
   }
 }
 
+/* ---------------- EL PERCHERO ----------------
+   El mercado de PRESENTES: acá solo se cuelga indumentaria NFT — nada más entra.
+   No aparece al principio: se descubre después del diseño, y colgar es opcional.
+   Los diseños flotan de sus perchas, fuera del mercado común y corriente.
+   Cada adopción reparte 40% diseñador · 40% tallerista · 20% DAO y
+   financia la confección IRL. Acá, versión educativa con tokens ES. */
+
+const PERCHA_SVG = `<svg class="percha-svg" viewBox="0 0 64 26" aria-hidden="true">
+  <path d="M32 2 a3.2 3.2 0 1 1 -3.2 3.2 M32 8.5 v4 L7 22 h50 L32 12.5"
+        fill="none" stroke="#c8a24b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+function percheroLocal() {
+  try { return JSON.parse(localStorage.getItem("presentes-perchero") || "[]"); } catch (_) { return []; }
+}
+function percheroGuardar(list) {
+  try { localStorage.setItem("presentes-perchero", JSON.stringify(list)); } catch (_) {}
+}
+function adoptados() {
+  try { return JSON.parse(localStorage.getItem("presentes-adoptados") || "[]"); } catch (_) { return []; }
+}
+function marcarAdoptado(nombre) {
+  const l = adoptados();
+  if (!l.includes(nombre)) l.push(nombre);
+  try { localStorage.setItem("presentes-adoptados", JSON.stringify(l)); } catch (_) {}
+}
+
+function cardPerchero(item, idx, esMio) {
+  const adoptado = adoptados().includes(item.nombre);
+  const precioChip = item.donacion
+    ? `<span class="precio-chip donacion">DONACIÓN</span>`
+    : `<span class="precio-chip">⬢ ${item.precio} ES</span>`;
+  return `
+    <div class="colgado" style="animation-delay:${(idx % 5) * -1.3}s" title="${(item.narrativa || "").replace(/"/g, "&quot;")}">
+      ${PERCHA_SVG}
+      <div class="colgado-cuerpo">
+        <div class="gen-cell" style="cursor:default"><div class="spin"><div class="loader"></div></div></div>
+        <div class="colgado-info">
+          <div class="c-title" style="font-size:17px">${item.nombre}</div>
+          <div class="c-desc">${item.linea} · ${item.arquetipo} · 1/1</div>
+          <div class="colgado-acciones">
+            ${precioChip}
+            ${
+              esMio
+                ? `<span class="cell-tag" style="position:static">TU DISEÑO</span>`
+                : adoptado
+                ? `<span class="mint-done" style="font-size:10px">✦ ADOPTADO</span>`
+                : `<button class="btn adoptar-btn" data-idx="${idx}" data-mio="${esMio}">Adoptar</button>`
+            }
+          </div>
+          <div class="adoptar-msg" id="msg-${idx}"></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function montarPerchero(cont, items, esMio) {
+  cont.innerHTML = items.map((it, i) => cardPerchero(it, i, esMio)).join("");
+  cont.querySelectorAll(".gen-cell").forEach((cell, i) => mountImg(cell, items[i].imagen, items[i].nombre));
+  cont.querySelectorAll(".adoptar-btn").forEach((b) => {
+    b.onclick = () => {
+      const item = items[Number(b.dataset.idx)];
+      const msg = cont.querySelector(`#msg-${b.dataset.idx}`);
+      const precio = item.donacion ? 0 : item.precio;
+      if (state.press < precio) {
+        msg.innerHTML = `Te faltan <b style="color:var(--gold)">⬢ ${precio - state.press} ES</b>. Se ganan creando: diseñá, minteá, sumá al archivo.`;
+        return;
+      }
+      state.press -= precio;
+      save();
+      updatePressChip(true);
+      marcarAdoptado(item.nombre);
+      b.remove();
+      msg.innerHTML = `<span class="mint-done">✦ Diseño adoptado.</span><br>
+        El contrato repartió: <b>40% diseñador · 40% tallerista · 20% DAO</b>.<br>
+        La prenda IRL entra en cola de confección upcycling. Regalía del diseñador en cada reventa.`;
+    };
+  });
+}
+
+async function screenPerchero() {
+  render(`
+    <div>
+      <div class="kicker">El Perchero · un mercado flotando fuera del mercado</div>
+      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">Acá no se compra ropa.<br>Se adopta un diseño.</h1>
+      <p class="lead">
+        En El Perchero solo se cuelga <b>indumentaria NFT</b> — nada más entra, por definición de percha.
+        Cada pieza es única (1/1), se paga en tokens ES, y cada adopción financia la confección real
+        de la prenda por un tallerista. Los diseños se mecen solos: no hay góndolas, no hay temporada de liquidación,
+        no hay talle único. Hay perchas.
+      </p>
+      <div class="mentora-label" style="margin-top:34px">Colgados por la comunidad</div>
+      <div class="perchero-grid" id="pOficial"><p style="color:var(--ivory-dim);font-size:13px">Acomodando las perchas…</p></div>
+      <div class="mentora-label" style="margin-top:38px">Tus diseños colgados</div>
+      <div class="perchero-grid" id="pMios"></div>
+      <div class="nav-row">
+        <button class="btn ghost" id="back">Inicio</button>
+        <span class="press-earn" style="margin:0">⬢ Tu saldo: ${state.press} ES</span>
+      </div>
+    </div>
+  `);
+  document.getElementById("back").onclick = screenLanding;
+
+  const mios = percheroLocal();
+  const pMios = document.getElementById("pMios");
+  if (mios.length) montarPerchero(pMios, mios, true);
+  else pMios.innerHTML = `<p style="color:var(--ivory-dim);font-size:13px;grid-column:1/-1">Todavía no colgaste ningún diseño. Es opcional, siempre: tu NFT puede quedarse solo tuyo.</p>`;
+
+  try {
+    const res = await fetch("perchero.json", { cache: "no-store" });
+    const oficial = await res.json();
+    montarPerchero(document.getElementById("pOficial"), oficial, false);
+  } catch (_) {
+    document.getElementById("pOficial").innerHTML = `<p style="color:var(--ivory-dim);font-size:13px;grid-column:1/-1">El Perchero no se pudo abrir ahora. Probá en un rato.</p>`;
+  }
+}
+
 /* ---------------- MOLDERÍA BASE ----------------
    Trazado geométrico simplificado a partir de medidas del cuerpo.
    Los SVG llevan unidades reales en cm: impresos al 100%, son moldes de verdad.
@@ -1077,7 +1187,7 @@ function screenAtelier(tab) {
     archBtn.disabled = true;
   };
   document.getElementById("restart").onclick = () => {
-    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false, archivo: false } });
+    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false, archivo: false, percha: false } });
     updatePressChip();
     try { sessionStorage.removeItem("presentes-estudio"); } catch (_) {}
     screenLanding();
@@ -1152,6 +1262,29 @@ function screenAtelier(tab) {
                  <button class="btn primary" id="mintBtn">Mintear NFT (simulado)</button>`
           }
         </div>
+        ${
+          state.minted
+            ? `<div class="f-block" style="margin-top:26px;border:1px dashed var(--gold-soft);padding:22px 24px;background:var(--bg-soft)">
+          <h4 style="font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">El Perchero · opcional, siempre</h4>
+          <div id="colgarBox">
+          ${
+            percheroLocal().some((e) => e.nombre === pieceName())
+              ? `<p style="font-size:14px;line-height:1.7"><span class="mint-done">✦ Tu diseño está colgado.</span> Se mece en El Perchero esperando ser adoptado.</p>`
+              : `<p style="font-size:14px;line-height:1.7;margin-bottom:14px">
+              Si querés, colgá tu NFT en <b>El Perchero</b>: el mercado de PRESENTES donde solo
+              se cuelga indumentaria, se paga en ES y cada adopción financia la prenda real.
+              Tu diseño puede también quedarse solo tuyo — colgarlo es una elección, no un destino.</p>
+            <div class="up-actions" style="align-items:center">
+              <input type="number" id="precioES" value="100" min="0" max="9999" style="width:110px;background:var(--bg);border:1px solid var(--line);color:var(--ivory);padding:12px;font-family:var(--sans);font-size:15px" /> <span style="font-size:12px;color:var(--ivory-dim)">ES</span>
+              <button class="btn primary" id="colgarVenta">Colgar a la venta</button>
+              <button class="btn ghost" id="colgarDon">Colgar en donación</button>
+            </div>`
+          }
+          </div>
+          <div class="up-actions" style="margin-top:14px"><button class="btn ghost" id="irPerchero">Entrar a El Perchero →</button></div>
+        </div>`
+            : ""
+        }
         <div class="f-block" style="margin-top:26px;border:1px solid var(--line);padding:22px 24px;background:var(--bg-soft)">
           <h4 style="font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">⬢ Token ES · tu saldo: ${state.press}</h4>
           <p style="font-size:14px;line-height:1.7">
@@ -1173,9 +1306,25 @@ function screenAtelier(tab) {
           state.tokenId = "PRES-" + Math.random().toString(16).slice(2, 10).toUpperCase();
           earnPress(25, "mint");
           save();
-          document.getElementById("mintBox").innerHTML = mintReceipt();
+          screenAtelier("mint");
         }, 1600);
       };
+    const irPerchero = document.getElementById("irPerchero");
+    if (irPerchero) irPerchero.onclick = screenPerchero;
+    const colgar = (donacion) => {
+      const precio = donacion ? 0 : Math.max(0, parseInt(document.getElementById("precioES").value, 10) || 0);
+      const list = percheroLocal();
+      if (!list.some((e) => e.nombre === pieceName())) {
+        list.unshift({ ...entradaActual(), precio, donacion });
+        percheroGuardar(list);
+        earnPress(10, "percha");
+      }
+      document.getElementById("colgarBox").innerHTML = `<p style="font-size:14px;line-height:1.7"><span class="mint-done">✦ Colgado.</span> ⬢ +10 ES — tu diseño ya se mece en El Perchero, esperando ser adoptado.</p>`;
+    };
+    const cv = document.getElementById("colgarVenta");
+    if (cv) cv.onclick = () => colgar(false);
+    const cd = document.getElementById("colgarDon");
+    if (cd) cd.onclick = () => colgar(true);
   }
 
   if (tab === "capsula") {
