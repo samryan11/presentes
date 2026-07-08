@@ -277,7 +277,7 @@ function buildPrompt(variation) {
   const p = state.profile;
   const line = state.line;
   const parts = [
-    "digital fashion couture, single garment product showcase, floating ghost mannequin display",
+    "digital fashion couture, single garment product showcase, floating ghost mannequin display, displayed as two views side by side: front view and back view of the same garment, both views complete and fully visible",
     line.garment,
     p.material.prompt,
     p.paleta.prompt,
@@ -291,7 +291,8 @@ function buildPrompt(variation) {
 }
 
 function imgUrl(prompt, seed) {
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=1024&seed=${seed}&nologo=true&model=flux`;
+  // cuadrado: cada imagen lleva frente y espalda de la prenda, lado a lado
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&model=flux`;
 }
 
 /* La IA gratuita atiende de a una imagen por vez: encolamos los pedidos
@@ -758,7 +759,12 @@ function screenDescribe() {
   };
 }
 
-const VARIATIONS = ["front view", "three-quarter view", "back view detail", "editorial full look"];
+const VARIATIONS = [
+  "classic faithful interpretation",
+  "avant-garde bold interpretation",
+  "refined minimal interpretation",
+  "richly detailed maximal interpretation",
+];
 
 function screenOpciones() {
   const conBoceto = !!state.sketch;
@@ -766,7 +772,8 @@ function screenOpciones() {
     <div>
       <div class="kicker">Elegí tu idea rectora</div>
       <h1 class="display" style="font-size:clamp(26px,4vw,40px)">${conBoceto ? "Tu boceto y cuatro visiones." : "Cuatro visiones de tu prenda."}</h1>
-      <p class="lead">La idea rectora es la que le da coherencia a todo: de ella nace tu capsule collection.
+      <p class="lead">Cada visión muestra tu prenda de frente y de espalda.
+      La idea rectora es la que le da coherencia a todo: de ella nace tu capsule collection.
       ${conBoceto ? "Tu boceto compite de igual a igual con la IA — y puede ganar." : "Elegí la que te reconozca."}</p>
       <div class="gen-grid" id="grid">
         ${
@@ -1082,7 +1089,7 @@ function screenAtelier(tab) {
   if (tab === "nft") {
     body.innerHTML = `
       <div class="nft-layout fade-in">
-        <div class="nft-frame gen-cell" style="aspect-ratio:3/4;cursor:default">
+        <div class="nft-frame gen-cell" style="aspect-ratio:1/1;cursor:default">
           <div class="spin"><div class="loader"></div></div>
         </div>
         <div class="nft-meta">
@@ -1188,7 +1195,7 @@ function screenAtelier(tab) {
             .map(
               (s, i) => `
             <figure>
-              <div class="gen-cell" style="aspect-ratio:3/4;cursor:default"><div class="spin"><div class="loader"></div><span>DERIVANDO…</span></div></div>
+              <div class="gen-cell" style="aspect-ratio:1/1;cursor:default"><div class="spin"><div class="loader"></div><span>DERIVANDO…</span></div></div>
               <figcaption>Derivada ${String(i + 1).padStart(2, "0")} · de la idea rectora ${pieceName()}</figcaption>
             </figure>`
             )
