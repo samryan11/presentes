@@ -906,12 +906,11 @@ async function screenArchivo() {
   }
 }
 
-/* ---------------- EL PERCHERO ----------------
-   El mercado de PRESENTES: acá solo se cuelga indumentaria NFT — nada más entra.
-   No aparece al principio: se descubre después del diseño, y colgar es opcional.
-   Los diseños flotan de sus perchas, fuera del mercado común y corriente.
-   Cada adopción reparte 40% diseñador · 40% tallerista · 20% DAO y
-   financia la confección IRL. Acá, versión educativa con tokens ES. */
+/* ---------------- NEUROACTION NFT · EL MARKETPLACE ----------------
+   Solo entra indumentaria NFT. No aparece al principio: se descubre
+   después del diseño, y colgar es opcional. El NFT financia la confección:
+   cada adopción reparte 40% diseñador · 40% tallerista · 20% DAO.
+   Acá, versión educativa con tokens ES. */
 
 const PERCHA_SVG = `<svg class="percha-svg" viewBox="0 0 64 26" aria-hidden="true">
   <path d="M32 2 a3.2 3.2 0 1 1 -3.2 3.2 M32 8.5 v4 L7 22 h50 L32 12.5"
@@ -989,15 +988,15 @@ function montarPerchero(cont, items, esMio) {
 async function screenPerchero() {
   render(`
     <div>
-      <div class="kicker">El Perchero · un mercado flotando fuera del mercado</div>
-      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">Acá no se compra ropa.<br>Se adopta un diseño.</h1>
+      <div class="kicker">NEUROACTION NFT · el marketplace de PRESENTES</div>
+      <h1 class="display" style="font-size:clamp(28px,4.5vw,44px)">El NFT financia<br>la confección.</h1>
       <p class="lead">
-        En El Perchero solo se cuelga <b>indumentaria NFT</b> — nada más entra, por definición de percha.
-        Cada pieza es única (1/1), se paga en tokens ES, y cada adopción financia la confección real
-        de la prenda por un tallerista. Los diseños se mecen solos: no hay góndolas, no hay temporada de liquidación,
-        no hay talle único. Hay perchas.
+        Acá sí se compra — pero de otra manera: adoptás un diseño único (1/1), pagás en tokens ES,
+        y esa adopción pone en marcha la prenda real, confeccionada upcycling por un tallerista.
+        El contrato reparte solo: 40% diseñador · 40% tallerista · 20% DAO, con regalía al diseñador
+        en cada reventa. Solo entra <b>indumentaria NFT</b> — cada diseño espera colgado de su percha.
       </p>
-      <div class="mentora-label" style="margin-top:34px">Colgados por la comunidad</div>
+      <div class="mentora-label" style="margin-top:34px">Diseños de la comunidad</div>
       <div class="perchero-grid" id="pOficial"><p style="color:var(--ivory-dim);font-size:13px">Acomodando las perchas…</p></div>
       <div class="mentora-label" style="margin-top:38px">Tus diseños colgados</div>
       <div class="perchero-grid" id="pMios"></div>
@@ -1019,7 +1018,7 @@ async function screenPerchero() {
     const oficial = await res.json();
     montarPerchero(document.getElementById("pOficial"), oficial, false);
   } catch (_) {
-    document.getElementById("pOficial").innerHTML = `<p style="color:var(--ivory-dim);font-size:13px;grid-column:1/-1">El Perchero no se pudo abrir ahora. Probá en un rato.</p>`;
+    document.getElementById("pOficial").innerHTML = `<p style="color:var(--ivory-dim);font-size:13px;grid-column:1/-1">El marketplace no se pudo abrir ahora. Probá en un rato.</p>`;
   }
 }
 
@@ -1144,7 +1143,7 @@ function screenAtelier(tab) {
     state.chosen === -1 ? state.sketch : imgUrl(buildPrompt(VARIATIONS[state.chosen]), state.seeds[state.chosen]);
   const tabs = [
     ["nft", "Ficha NFT"],
-    ["mint", "Mint + Reparto"],
+    ["mint", "Mint + Split"],
     ["capsula", "Cápsula"],
     ["taller", "Ficha de taller"],
     ["perfil", "Mi perfil"],
@@ -1265,14 +1264,14 @@ function screenAtelier(tab) {
         ${
           state.minted
             ? `<div class="f-block" style="margin-top:26px;border:1px dashed var(--gold-soft);padding:22px 24px;background:var(--bg-soft)">
-          <h4 style="font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">El Perchero · opcional, siempre</h4>
+          <h4 style="font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">NeuroAction NFT · opcional, siempre</h4>
           <div id="colgarBox">
           ${
             percheroLocal().some((e) => e.nombre === pieceName())
-              ? `<p style="font-size:14px;line-height:1.7"><span class="mint-done">✦ Tu diseño está colgado.</span> Se mece en El Perchero esperando ser adoptado.</p>`
+              ? `<p style="font-size:14px;line-height:1.7"><span class="mint-done">✦ Tu diseño está colgado.</span> Se mece en el marketplace esperando ser adoptado.</p>`
               : `<p style="font-size:14px;line-height:1.7;margin-bottom:14px">
-              Si querés, colgá tu NFT en <b>El Perchero</b>: el mercado de PRESENTES donde solo
-              se cuelga indumentaria, se paga en ES y cada adopción financia la prenda real.
+              Si querés, colgá tu NFT en <b>NEUROACTION NFT</b>, el marketplace de PRESENTES:
+              solo entra indumentaria, se paga en ES y cada adopción financia la confección real.
               Tu diseño puede también quedarse solo tuyo — colgarlo es una elección, no un destino.</p>
             <div class="up-actions" style="align-items:center">
               <input type="number" id="precioES" value="100" min="0" max="9999" style="width:110px;background:var(--bg);border:1px solid var(--line);color:var(--ivory);padding:12px;font-family:var(--sans);font-size:15px" /> <span style="font-size:12px;color:var(--ivory-dim)">ES</span>
@@ -1281,7 +1280,7 @@ function screenAtelier(tab) {
             </div>`
           }
           </div>
-          <div class="up-actions" style="margin-top:14px"><button class="btn ghost" id="irPerchero">Entrar a El Perchero →</button></div>
+          <div class="up-actions" style="margin-top:14px"><button class="btn ghost" id="irPerchero">Entrar al marketplace →</button></div>
         </div>`
             : ""
         }
@@ -1319,7 +1318,7 @@ function screenAtelier(tab) {
         percheroGuardar(list);
         earnPress(10, "percha");
       }
-      document.getElementById("colgarBox").innerHTML = `<p style="font-size:14px;line-height:1.7"><span class="mint-done">✦ Colgado.</span> ⬢ +10 ES — tu diseño ya se mece en El Perchero, esperando ser adoptado.</p>`;
+      document.getElementById("colgarBox").innerHTML = `<p style="font-size:14px;line-height:1.7"><span class="mint-done">✦ Colgado.</span> ⬢ +10 ES — tu diseño ya se mece en el marketplace, esperando ser adoptado.</p>`;
     };
     const cv = document.getElementById("colgarVenta");
     if (cv) cv.onclick = () => colgar(false);
