@@ -140,6 +140,27 @@ h1.display {
 
 /* ---------- landing ---------- */
 .landing { padding-top: 6vh; }
+.landing-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(170px, 250px);
+  gap: 36px;
+  align-items: center;
+}
+.figurin { margin: 0; }
+.figurin svg { width: 100%; height: auto; display: block; }
+.figurin figcaption {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ivory-dim);
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+@media (max-width: 720px) {
+  .landing-grid { grid-template-columns: 1fr; }
+  .figurin { max-width: 190px; margin: 6px auto 0; }
+}
 .landing .doors {
   margin-top: 48px;
   display: grid;

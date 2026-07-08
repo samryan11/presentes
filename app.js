@@ -277,7 +277,7 @@ function buildPrompt(variation) {
   const p = state.profile;
   const line = state.line;
   const parts = [
-    "digital fashion couture editorial, garment worn by a real human figure, natural imperfect body, authentic relaxed pose, real person not a mannequin",
+    "digital fashion couture, single garment product showcase, floating ghost mannequin display",
     line.garment,
     p.material.prompt,
     p.paleta.prompt,
@@ -379,19 +379,68 @@ function render(html) {
   window.scrollTo({ top: 0 });
 }
 
+/* El figurín de la portada: croquis de moda en línea dorada, sin prenda todavía.
+   La estrella-brújula del logo late donde va el corazón. */
+const FIGURIN_SVG = `
+<svg viewBox="0 0 200 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Figurín de moda esperando un diseño">
+  <line x1="100" y1="8" x2="100" y2="452" stroke="#a9b0bc" stroke-width="0.6" stroke-dasharray="3 5" opacity="0.45"/>
+  <g stroke="#a9b0bc" stroke-width="0.6" stroke-dasharray="2 4" opacity="0.4">
+    <line x1="40" y1="90" x2="160" y2="90"/>
+    <line x1="52" y1="170" x2="148" y2="170"/>
+    <line x1="46" y1="216" x2="154" y2="216"/>
+    <line x1="60" y1="330" x2="140" y2="330"/>
+  </g>
+  <g fill="#a9b0bc" font-family="sans-serif" font-size="7" opacity="0.55">
+    <text x="34" y="88" text-anchor="end">hombros</text>
+    <text x="46" y="168" text-anchor="end">cintura</text>
+    <text x="40" y="214" text-anchor="end">cadera</text>
+    <text x="54" y="328" text-anchor="end">rodillas</text>
+  </g>
+  <g fill="none" stroke="#c8a24b" stroke-width="1.7" stroke-linecap="round">
+    <ellipse cx="100" cy="40" rx="15" ry="21"/>
+    <path d="M93,60 C93,66 92,71 90,76"/>
+    <path d="M107,60 C107,66 108,71 110,76"/>
+    <path d="M90,76 Q76,80 64,90"/>
+    <path d="M110,76 Q124,80 136,90"/>
+    <path d="M64,90 C70,122 82,142 80,168 C78,192 71,200 70,216"/>
+    <path d="M136,90 C130,122 118,142 120,168 C122,192 129,200 130,216"/>
+    <path d="M70,216 Q100,240 130,216"/>
+    <path d="M64,90 C55,122 53,162 49,198 C47,212 45,224 43,234"/>
+    <path d="M136,90 C145,122 147,162 151,198 C153,212 155,224 157,234"/>
+    <path d="M70,216 C74,272 82,332 84,382 C85,402 86,412 86,426"/>
+    <path d="M98,238 C96,282 93,342 92,386 C92,404 92,414 92,426"/>
+    <path d="M130,216 C126,272 118,332 116,382 C115,402 114,412 114,426"/>
+    <path d="M102,238 C104,282 107,342 108,386 C108,404 108,414 108,426"/>
+    <path d="M86,426 L76,438 L94,435"/>
+    <path d="M114,426 L124,438 L106,435"/>
+  </g>
+  <g>
+    <circle cx="100" cy="130" r="14" fill="none" stroke="#c8a24b" stroke-width="0.8" opacity="0.7"/>
+    <path d="M100,114 L104,126 L116,130 L104,134 L100,146 L96,134 L84,130 L96,126 Z" fill="#c8a24b"/>
+  </g>
+</svg>`;
+
 function screenLanding() {
   render(`
     <section class="landing">
-      <div class="kicker">PRESENTES</div>
-      <h1 class="display">Lo que buscás<br>ya vive adentro.</h1>
-      <p class="lead">
-        Acá no venís a comprar moda: venís a encontrarla adentro tuyo.
-        La neuro-action es el primer paso del pase de upcycling: seis preguntas
-        que despiertan al diseñador que ya sos. Después creás tu prenda única
-        — desde tus palabras, desde tu propio boceto, o las dos cosas — y aprendés
-        cómo su versión NFT puede financiar la confección real, upcycling,
-        en un taller con trabajo digno.
-      </p>
+      <div class="landing-grid">
+        <div class="landing-copy">
+          <div class="kicker">PRESENTES</div>
+          <h1 class="display">Lo que buscás<br>ya vive adentro.</h1>
+          <p class="lead">
+            Acá no venís a comprar moda: venís a encontrarla adentro tuyo.
+            La neuro-action es el primer paso del pase de upcycling: seis preguntas
+            que despiertan al diseñador que ya sos. Después creás tu prenda única
+            — desde tus palabras, desde tu propio boceto, o las dos cosas — y aprendés
+            cómo su versión NFT puede financiar la confección real, upcycling,
+            en un taller con trabajo digno.
+          </p>
+        </div>
+        <figure class="figurin">
+          ${FIGURIN_SVG}
+          <figcaption>El figurín está en blanco.<br>Tu diseño lo viste.</figcaption>
+        </figure>
+      </div>
       <div class="doors">
         <div class="door" id="doorStart">
           <span class="door-k">Empezar</span>
