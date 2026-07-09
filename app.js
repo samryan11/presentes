@@ -16,6 +16,7 @@ const state = {
   minted: false,
   tokenId: null,
   capsuleSeeds: [],
+  capsuleN: null,   // cuántas derivadas quiere el diseñador (la cápsula es opcional)
   medidas: null,                                       // medidas del cuerpo para la moldería
   press: 0,                                            // saldo del token ES (simulado)
   pressHitos: { perfil: false, rector: false, mint: false, archivo: false, percha: false }, // para no pagar dos veces el mismo hito
@@ -48,7 +49,7 @@ function save() {
   const data = {
     answers: state.answers, lineKey: state.line?.key || null, tela: state.tela, desc: state.desc,
     seeds: state.seeds, chosen: state.chosen, minted: state.minted,
-    tokenId: state.tokenId, capsuleSeeds: state.capsuleSeeds,
+    tokenId: state.tokenId, capsuleSeeds: state.capsuleSeeds, capsuleN: state.capsuleN,
     press: state.press, pressHitos: state.pressHitos, medidas: state.medidas,
   };
   try {
@@ -77,6 +78,7 @@ function restore() {
     state.minted = !!s.minted;
     state.tokenId = s.tokenId;
     state.capsuleSeeds = s.capsuleSeeds || [];
+    state.capsuleN = s.capsuleN || null;
     state.press = s.press || 0;
     state.pressHitos = s.pressHitos || { perfil: false, rector: false, mint: false, archivo: false, percha: false };
     state.medidas = s.medidas || null;
@@ -666,7 +668,9 @@ function screenDescribe() {
       <div class="upload-box">
         ${
           state.sketch
-            ? `<img src="${state.sketch}" alt="Tu boceto" />`
+            ? `<img src="${state.sketch}" alt="Tu boceto" />
+               <span><b>Importante:</b> la IA todavía no ve tu boceto — compite como opción, tal cual es.
+               Si querés que las visiones de la IA se le parezcan, contale arriba <b>con palabras</b> qué dibujaste.</span>`
             : `<span>Dibujalo en un papel y sacale una foto. Garabatealo con el dedo en el celular.
                Recortá y pegá. Está hecho con tu mano, y eso ya lo hace único.
                <b>No hace falta ser gran dibujante: si transmite lo que imaginás, sirve.</b></span>`
@@ -796,7 +800,8 @@ function screenOpciones() {
     state.chosen = i;
     state.minted = false;
     state.tokenId = null;
-    state.capsuleSeeds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 999999));
+    state.capsuleSeeds = [];
+    state.capsuleN = null;
     earnPress(15, "rector");
     save();
     screenAtelier("nft");
@@ -1140,7 +1145,7 @@ function screenAtelier(tab) {
     ["nft", "Ficha NFT"],
     ["mint", "Mint + Split"],
     ["capsula", "Cápsula"],
-    ["taller", "Ficha de taller"],
+    ["taller", "Ficha técnica"],
     ["perfil", "Mi perfil"],
   ];
   render(`
@@ -1181,7 +1186,7 @@ function screenAtelier(tab) {
     archBtn.disabled = true;
   };
   document.getElementById("restart").onclick = () => {
-    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false, archivo: false, percha: false } });
+    Object.assign(state, { answers: {}, profile: null, line: null, tela: null, sketch: null, desc: "", seeds: [], chosen: null, minted: false, tokenId: null, capsuleSeeds: [], capsuleN: null, medidas: null, press: 0, pressHitos: { perfil: false, rector: false, mint: false, archivo: false, percha: false } });
     updatePressChip();
     try { sessionStorage.removeItem("presentes-estudio"); } catch (_) {}
     screenLanding();
@@ -1322,52 +1327,76 @@ function screenAtelier(tab) {
   }
 
   if (tab === "capsula") {
-    const capVars = [
-      "matching capsule piece: complementary top or shirt, same design language",
-      "matching capsule piece: accessory derived from the main garment",
-      "matching capsule piece: alternative colorway variation",
-    ];
-    body.innerHTML = `
-      <div class="fade-in">
-        <p class="lead" style="margin-bottom:26px">
-          De la idea rectora nace una <b>capsule collection</b>: prendas que comparten su ADN.
-          En el taller escolar, cada estudiante puede desarrollar su cápsula a partir de su idea rectora.
-        </p>
-        <div class="capsula-grid">
-          ${state.capsuleSeeds
-            .map(
-              (s, i) => `
-            <figure>
-              <div class="gen-cell" style="aspect-ratio:1/1;cursor:default"><div class="spin"><div class="loader"></div><span>DERIVANDO…</span></div></div>
-              <figcaption>Derivada ${String(i + 1).padStart(2, "0")} · de la idea rectora ${pieceName()}</figcaption>
-            </figure>`
-            )
-            .join("")}
-        </div>
-      </div>`;
-    body.querySelectorAll(".gen-cell").forEach((cell, i) => {
-      mountImg(cell, imgUrl(buildPrompt(capVars[i]), state.capsuleSeeds[i]), `Derivada ${i + 1}`);
-    });
+    if (!state.capsuleN) {
+      body.innerHTML = `
+        <div class="fade-in" style="max-width:680px">
+          <p class="lead" style="margin-bottom:24px">
+            Tu idea rectora es <b>One of a Kind</b>: única, entera, tuya.
+            Si querés, de ella puede nacer una capsule collection. ¿De cuántas prendas?
+          </p>
+          <div class="up-actions">
+            <button class="btn caps-n" data-n="2">2 prendas</button>
+            <button class="btn caps-n" data-n="3">3 prendas</button>
+            <button class="btn caps-n" data-n="4">4 prendas</button>
+            <button class="btn ghost" id="soloOOK">Por ahora, solo mi One of a Kind</button>
+          </div>
+        </div>`;
+      body.querySelectorAll(".caps-n").forEach((b) => {
+        b.onclick = () => {
+          state.capsuleN = Number(b.dataset.n);
+          state.capsuleSeeds = Array.from({ length: state.capsuleN }, () => Math.floor(Math.random() * 999999));
+          save();
+          screenAtelier("capsula");
+        };
+      });
+      document.getElementById("soloOOK").onclick = () => screenAtelier("nft");
+    } else {
+      const capVars = [
+        "matching capsule piece: complementary top or shirt, same design language",
+        "matching capsule piece: accessory derived from the main garment",
+        "matching capsule piece: alternative colorway variation",
+        "matching capsule piece: complementary bottom garment, same design language",
+      ];
+      body.innerHTML = `
+        <div class="fade-in">
+          <p class="lead" style="margin-bottom:26px">
+            Tu capsule collection: ${state.capsuleN} prendas que comparten el ADN de tu idea rectora.
+          </p>
+          <div class="capsula-grid">
+            ${state.capsuleSeeds
+              .map(
+                (s, i) => `
+              <figure>
+                <div class="gen-cell" style="aspect-ratio:1/1;cursor:default"><div class="spin"><div class="loader"></div><span>DERIVANDO…</span></div></div>
+                <figcaption>Derivada ${String(i + 1).padStart(2, "0")} · de la idea rectora ${pieceName()}</figcaption>
+              </figure>`
+              )
+              .join("")}
+          </div>
+        </div>`;
+      body.querySelectorAll(".gen-cell").forEach((cell, i) => {
+        mountImg(cell, imgUrl(buildPrompt(capVars[i % capVars.length]), state.capsuleSeeds[i]), `Derivada ${i + 1}`);
+      });
+    }
   }
 
   if (tab === "taller") {
     body.innerHTML = `
       <div class="ficha fade-in">
-        <p class="lead" style="margin-bottom:22px">
-          Esta ficha viaja con el NFT: es la guía para que el/la tallerista materialice tu diseño con prendas recuperadas.
-        </p>
-        <div class="f-block"><h4>Prenda</h4><p>${pieceName()} — ${state.line.nombre}. Edición única (1/1).</p></div>
-        <div class="f-block"><h4>Materia prima sugerida</h4><p>${p.material.taller}</p>
-          <p style="margin-top:8px;color:var(--ivory-dim)">Punto de partida emocional del diseño: “${p.rescate}”.</p></div>
-        <div class="f-block"><h4>Paleta ${p.paleta.nombre}</h4>
-          <div class="swatches">${p.paleta.colores.map((c) => `<i style="background:${c}"></i>`).join("")}</div></div>
-        <div class="f-block"><h4>Intervenciones</h4>
-          <ul>
-            <li>Firma del diseñador/a: <b>${p.firma.nombre.toLowerCase()}</b> — presente y visible en la prenda.</li>
-            ${state.tela ? `<li>Camino textil elegido — <b>${TELAS[state.tela].nombre.toLowerCase()}</b>: ${TELAS[state.tela].taller}</li>` : ""}
-            <li>Intención declarada: “${state.desc}”.</li>
-            <li>Criterio upcycling: no comprar material textil nuevo; todo componente sale de prendas de 2ª mano de buena calidad o sobrantes de producción.</li>
-          </ul></div>
+        <div class="f-block">
+          <h4>Ficha técnica · viaja con el NFT</h4>
+          <div class="meta-rows">
+            <div class="meta-row"><span class="k">Prenda</span><span class="v">${pieceName()} · ${state.line.nombre} · 1/1</span></div>
+            <div class="meta-row"><span class="k">Materia prima</span><span class="v">${p.material.taller}</span></div>
+            <div class="meta-row"><span class="k">Paleta ${p.paleta.nombre}</span><span class="v"><span class="swatches" style="display:inline-flex">${p.paleta.colores.map((c) => `<i style="background:${c}"></i>`).join("")}</span></span></div>
+            <div class="meta-row"><span class="k">Firma</span><span class="v">${p.firma.nombre}</span></div>
+            ${state.tela ? `<div class="meta-row"><span class="k">Camino textil</span><span class="v">${TELAS[state.tela].nombre} — ${TELAS[state.tela].taller}</span></div>` : ""}
+            ${state.desc ? `<div class="meta-row"><span class="k">Intención</span><span class="v">“${state.desc}”</span></div>` : ""}
+            <div class="meta-row"><span class="k">Regla upcycling</span><span class="v">Nada de material textil nuevo: todo sale de prendas rescatadas</span></div>
+            <div class="meta-row"><span class="k">Costuras</span><span class="v">Agregar 1 cm de costura · 4 cm de dobladillo</span></div>
+            <div class="meta-row"><span class="k">Trazabilidad</span><span class="v">Fotos antes / durante / después — se anclan al NFT</span></div>
+          </div>
+        </div>
         ${
           state.sketch
             ? `<div class="f-block"><h4>Boceto original</h4>
@@ -1375,7 +1404,6 @@ function screenAtelier(tab) {
                  <p>Trazado por el/la diseñador/a. Vale como intención, no como plano: el taller interpreta.</p></div>`
             : ""
         }
-        <div class="f-block"><h4>Trazabilidad</h4><p>Registrar fotos del antes/después y origen de las prendas base. En la versión real, esta trazabilidad se ancla al NFT (IPFS) y la audita la DAO.</p></div>
         <div class="f-block" style="border-color:var(--gold-soft)">
           <h4>Esta es la moldería de tu diseño</h4>
           <p style="margin-bottom:18px">
@@ -1441,7 +1469,7 @@ function screenAtelier(tab) {
             ${p.paleta.otro ? `<div class="pg-v" style="margin-top:8px">“${p.paleta.otro}”</div>` : ""}</div>
           <div><div class="pg-k">Material</div><div class="pg-v">${p.material.nombre}</div></div>
           <div><div class="pg-k">Firma</div><div class="pg-v">${p.firma.nombre}</div></div>
-          <div><div class="pg-k">Prendas diseñadas</div><div class="pg-v">1 idea rectora + 3 derivadas de cápsula</div></div>
+          <div><div class="pg-k">Prendas diseñadas</div><div class="pg-v">1 One of a Kind${state.capsuleN ? ` + ${state.capsuleN} derivadas de cápsula` : ""}</div></div>
           <div><div class="pg-k">Token ES</div><div class="pg-v">⬢ ${state.press} ganados en esta sesión</div></div>
           <div style="grid-column:1/-1"><div class="pg-k">Próximo paso sugerido</div>
             <div class="pg-v">Diseñá en otra línea PFP para expandir tu identidad, o proponé un concepto para la próxima votación de temporada de la DAO.</div></div>
