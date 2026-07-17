@@ -424,12 +424,9 @@ function screenLanding() {
           <div class="kicker">PRESENTES</div>
           <h1 class="display">Lo que buscás<br>ya vive adentro.</h1>
           <p class="lead">
-            Acá no venís a comprar moda: venís a encontrarla adentro tuyo.
-            La neuro-action es el primer paso del pase de upcycling: seis preguntas
-            que despiertan al diseñador que ya sos. Después creás tu prenda única
-            — desde tus palabras, desde tu propio boceto, o las dos cosas — y aprendés
-            cómo su versión NFT puede financiar la confección real, upcycling,
-            en un taller con trabajo digno.
+            La neuro-action: seis preguntas que despiertan al diseñador que ya sos.
+            Después, tu prenda única — con tus palabras o tu boceto —
+            y su NFT financiando la confección real, upcycling, en un taller.
           </p>
         </div>
         <figure class="figurin">
